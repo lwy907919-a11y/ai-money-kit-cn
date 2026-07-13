@@ -938,12 +938,14 @@ function updateModalAmount() {
     module.exports = md5
   } else {
     $.md5 = md5
+    $._xhuMd5 = md5
   }
 })(this)
 
 </script>
 <script>
-function md5(str) { return window.md5(str); }
+// _xhuMd5 已经在 blueimp IIFE 内部保存, 这里直接用
+function md5(str) { return window._xhuMd5(str); }
 </script>
 
 // 虎皮椒支付集成
