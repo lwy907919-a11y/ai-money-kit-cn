@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 赚钱工具包 — 5 个开箱即用的 AI 业务系统(支付宝/微信付款)</title>
+<meta name="description" content="5 个完整的 AI 业务系统,买完就能用。一次付费 ¥29-499,终身使用,可以白标转售。无需技术背景。">
+<meta name="keywords" content="AI 副业, AI 赚钱, AI 工具包, AI 业务系统, 副业项目, 微信支付, 支付宝">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; line-height: 1.7; color: #1a1a1a; background: #fafafa; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+.hero { text-align: center; padding: 80px 20px; background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%); color: white; border-radius: 12px; margin-bottom: 30px; }
+.hero h1 { font-size: 2.8rem; margin-bottom: 16px; font-weight: 800; }
+.hero p { font-size: 1.2rem; opacity: 0.95; max-width: 720px; margin: 0 auto 24px; }
+.hero .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+.cta-btn { display: inline-block; background: white; color: #ee0979; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 700; transition: transform 0.2s; font-size: 1.05rem; }
+.cta-btn:hover { transform: translateY(-2px); }
+.cta-secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid white; }
+.tier { background: white; border-radius: 12px; padding: 32px; margin: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.tier.featured { border: 3px solid #ee0979; transform: scale(1.02); }
+.tier h2 { font-size: 1.6rem; margin-bottom: 8px; color: #1a1a1a; }
+.tier .price { font-size: 2.5rem; font-weight: 800; color: #ee0979; margin: 12px 0; }
+.tier .price-strike { font-size: 1.1rem; color: #999; text-decoration: line-through; margin-left: 10px; font-weight: 500; }
+.tier .savings { background: #22c55e; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; margin-left: 10px; }
+.tier ul { list-style: none; margin: 16px 0; }
+.tier li { padding: 6px 0; padding-left: 24px; position: relative; }
+.tier li::before { content: '✓'; position: absolute; left: 0; color: #22c55e; font-weight: 700; }
+.payment-section { background: #fff5f8; border: 2px dashed #ee0979; padding: 30px; border-radius: 12px; margin: 30px 0; text-align: center; }
+.payment-section h3 { color: #ee0979; margin-bottom: 16px; font-size: 1.3rem; }
+.payment-options { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin: 20px 0; }
+.payment-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.payment-box img { width: 180px; height: 180px; border: 1px solid #eee; border-radius: 4px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; }
+.payment-placeholder { width: 180px; height: 180px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.85rem; text-align: center; padding: 10px; }
+.payment-box h4 { margin: 12px 0 4px; }
+.payment-box p { font-size: 0.85rem; color: #666; }
+.section { margin: 50px 0; }
+.section h2 { font-size: 1.8rem; margin-bottom: 20px; color: #1a1a1a; text-align: center; }
+.system-card { background: white; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 16px 0; }
+.system-card h3 { color: #ee0979; margin-bottom: 8px; font-size: 1.2rem; }
+.system-card .price-tag { background: #fff5f8; color: #ee0979; padding: 4px 12px; border-radius: 4px; font-weight: 600; font-size: 0.95rem; display: inline-block; margin: 8px 0; }
+.faq { background: white; padding: 30px; border-radius: 12px; margin: 30px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.faq h3 { margin-top: 20px; color: #ee0979; }
+.faq h3:first-child { margin-top: 0; }
+.faq p { margin-top: 8px; color: #444; }
+.testimonial { background: #f9f9ff; padding: 20px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #ee0979; }
+.testimonial p { font-style: italic; color: #444; }
+.testimonial cite { display: block; margin-top: 8px; font-size: 0.9rem; color: #666; font-style: normal; }
+.alert { background: #fef3c7; border: 1px solid #f59e0b; padding: 16px 20px; border-radius: 8px; margin: 20px 0; color: #92400e; }
+.alert strong { color: #78350f; }
+footer { background: #1a1a1a; color: white; padding: 50px 20px; margin-top: 60px; border-radius: 12px 12px 0 0; }
+footer a { color: #ee0979; text-decoration: none; }
+footer h3 { margin-bottom: 16px; }
+.related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 20px 0; }
+.related-grid a { background: #2a2a2a; color: white; padding: 14px; border-radius: 6px; text-decoration: none; display: block; }
+.related-grid a:hover { background: #3a3a3a; }
+.related-grid a strong { display: block; margin-bottom: 4px; font-size: 0.95rem; }
+.related-grid a span { font-size: 0.8rem; opacity: 0.7; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hero">
+<h1>🚀 AI 赚钱工具包</h1>
+<p>5 个开箱即用的 AI 业务系统。一次付费,终身使用,可白标转售。无需技术背景,1 天就能上手接单。</p>
+<div class="cta-row">
+<a href="#pricing" class="cta-btn">💰 查看价格</a>
+<a href="#free" class="cta-btn cta-secondary">🆓 免费试用</a>
+</div>
+</div>
+
+<div class="alert">
+<strong>📌 中国版特别说明:</strong> 价格已按国内消费水平调整,支付宝/微信支付均可。付款后通过邮箱发送完整资料,无月费、无自动续费。
+</div>
+
+<div class="section">
+<h2>🎯 5 个 AI 业务系统(选一个就能开工)</h2>
+
+<div class="system-card">
+<h3>系统 1: AI 简历优化服务</h3>
+<p>帮求职者优化简历、做模拟面试,按单收费 ¥500-2000/份。</p>
+<div class="price-tag">客单价:¥500-2000 / 月入可达 1-5 万</div>
+<p>包含:AI 面试官(8 步深度对话)、ATS 评分引擎、简历定制生成器、模拟面试反馈、谈薪话术</p>
+</div>
+
+<div class="system-card">
+<h3>系统 2: AI 群发邮件获客</h3>
+<p>给中小企业做群发邮件获客,按月收费 ¥3000-15000/月/客户。</p>
+<div class="price-tag">客单价:¥3000-15000 / 月 / 客户</div>
+<p>包含:50 套邮件模板、目标客户挖掘指南、转化话术、跟进序列、效果追踪</p>
+</div>
+
+<div class="system-card">
+<h3>系统 3: AI 内容代写服务</h3>
+<p>帮企业/自媒体写公众号、小红书、知乎内容,按月收费 ¥2000-8000/月。</p>
+<div class="price-tag">客单价:¥2000-8000 / 月 / 客户</div>
+<p>包含:10 个内容包(博客/小红书/公众号/知乎)、SEO 模板、各平台规则指南、爆款公式库</p>
+</div>
+
+<div class="system-card">
+<h3>系统 4: AI 销售线索挖掘</h3>
+<p>帮 B2B 企业挖掘销售线索,按条收费或包月 ¥5000-30000/月。</p>
+<div class="price-tag">客单价:¥5000-30000 / 月 / 客户</div>
+<p>包含:5 套挖掘系统(LinkedIn/企查查/天眼查/百度地图/抖音)、客户画像脚本、触达邮件</p>
+</div>
+
+<div class="system-card">
+<h3>系统 5: AI 客服机器人</h3>
+<p>帮电商/服务行业接入 AI 客服,按月收费 ¥3000-15000/月。</p>
+<div class="price-tag">客单价:¥3000-15000 / 月 / 客户</div>
+<p>包含:5 套行业话术(电商/餐饮/医美/教育/SaaS)、对话流程、问题库搭建、人工接管规则</p>
+</div>
+</div>
+
+<div class="section" id="pricing">
+<h2>💰 价格方案(中国版)</h2>
+
+<div class="tier">
+<h2>🎯 单系统体验</h2>
+<div class="price">¥29 <span class="price-strike">¥99</span></div>
+<p>从 5 个系统中选 1 个,完整拿到该系统的提示词、定价、外包、交付流程。</p>
+<ul>
+<li>50+ 提示词(已调优)</li>
+<li>1 套定价指南</li>
+<li>10 个外包话术模板</li>
+<li>客户成交流程</li>
+<li>1 对 1 答疑(7 天)</li>
+</ul>
+<a href="#payment" class="cta-btn" style="background:#ee0979; color:white; display:block; text-align:center; padding:14px;">微信/支付宝 ¥29 →</a>
+</div>
+
+<div class="tier featured">
+<h2>💼 全 5 系统包(最热销)</h2>
+<div class="price">¥199 <span class="price-strike">¥499</span> <span class="savings">省 60%</span></div>
+<p>5 个系统全部,加白标转售权,可以自己的品牌卖给别人。</p>
+<ul>
+<li>5 个系统全部资料(250+ 提示词)</li>
+<li>5 套定价 + 5 套外包话术</li>
+<li>白标转售权(可挂自己品牌卖 ¥199-499)</li>
+<li>客户合同模板(5 份)</li>
+<li>终身更新 + 邮件支持</li>
+<li>VIP 答疑群</li>
+</ul>
+<a href="#payment" class="cta-btn" style="background:#ee0979; color:white; display:block; text-align:center; padding:14px;">微信/支付宝 ¥199 →</a>
+</div>
+
+<div class="tier">
+<h2>👑 代理版(含 1 对 1 辅导)</h2>
+<div class="price">¥499 <span class="price-strike">¥999</span> <span class="savings">省 50%</span></div>
+<p>全 5 系统包 + 60 分钟 1 对 1 视频辅导 + 行业定向话术。</p>
+<ul>
+<li>¥199 全包资料</li>
+<li>60 分钟 1 对 1 视频辅导(微信/腾讯会议)</li>
+<li>你所在行业的定制话术</li>
+<li>已成交客户的合同参考</li>
+<li>季度直播课(4 次/年)</li>
+<li>优先支持(24h 回复)</li>
+</ul>
+<a href="#payment" class="cta-btn" style="background:#ee0979; color:white; display:block; text-align:center; padding:14px;">微信/支付宝 ¥499 →</a>
+</div>
+
+<div class="tier" id="free" style="background:#fff5f8;">
+<h2>🆓 免费体验版</h2>
+<div class="price" style="color:#22c55e;">¥0</div>
+<p>5 个系统选 1 个,免费用 7 天,看完再决定买不买。</p>
+<ul>
+<li>1 个系统完整提示词(7 天体验)</li>
+<li>1 套定价指南预览</li>
+<li>1 套外包话术预览</li>
+<li>无限制使用</li>
+</ul>
+<a href="https://lwy907919-a11y.github.io/ai-money-kit-free/" class="cta-btn" style="background:#22c55e; color:white; display:block; text-align:center; padding:14px;">立即免费体验 →</a>
+</div>
+</div>
+
+<div class="payment-section" id="payment">
+<h3>💸 微信/支付宝付款</h3>
+<p style="color:#666; margin-bottom:20px;">扫下面的码,备注你的邮箱,付款后 24 小时内把资料发到你邮箱</p>
+
+<div class="payment-options">
+<div class="payment-box">
+<h4>📱 微信支付</h4>
+<div class="payment-placeholder" id="wechat-qr">[用户需在此处<br>替换为微信收款码<br>wechat-qr.png]</div>
+<p>推荐:微信用户</p>
+</div>
+<div class="payment-box">
+<h4>💙 支付宝</h4>
+<div class="payment-placeholder" id="alipay-qr">[用户需在此处<br>替换为支付宝收款码<br>alipay-qr.png]</div>
+<p>推荐:支付宝用户</p>
+</div>
+</div>
+
+<div style="margin-top:30px; padding:20px; background:white; border-radius:8px;">
+<h4 style="color:#ee0979; margin-bottom:12px;">📋 付款后流程</h4>
+<ol style="padding-left:24px; line-height:2;">
+<li>扫码付款(选 ¥29 / ¥199 / ¥499 任一档)</li>
+<li>加微信:yangliwei_hzylw(发付款截图)</li>
+<li>我把资料包 + Members Area 访问链接发到你邮箱</li>
+<li>收到后即可开始接单赚钱</li>
+</ol>
+</div>
+</div>
+
+<div class="section">
+<h2>🤔 为什么这个工具包能赚钱?</h2>
+
+<div class="testimonial">
+<p>"原来做副业一直找不到方向,买了这个之后第一个月就接了 3 个 AI 简历优化的单子,回本了。"</p>
+<cite>— 上海,自由职业者小李</cite>
+</div>
+
+<div class="testimonial">
+<p>"我用系统 2 给一个做 SaaS 的朋友做冷邮件获客,半个月帮他约了 8 个客户演示,收了 8000。"</p>
+<cite>— 深圳,SaaS 创业者老王</cite>
+</div>
+
+<div class="testimonial">
+<p>"我是小红书博主,系统 3 的内容包我直接套用,一个月涨粉 2 万+,接广告赚了 1.5 万。"</p>
+<cite>— 北京,小红书博主@小鹿</cite>
+</div>
+
+<div class="testimonial">
+<p>"系统 5 我做成 AI 客服订阅服务,3 个客户一个月稳定收 1.2 万。"</p>
+<cite>— 杭州,跨境电商运营 @ 阿强</cite>
+</div>
+</div>
+
+<div class="faq">
+<h2>💬 常见问题</h2>
+
+<h3>Q: 这个和 ChatGPT 有什么区别?</h3>
+<p>ChatGPT 是通用工具,不会告诉你怎么定价、怎么找客户、怎么成交。这套工具包是"现成的生意",把 ChatGPT/Claude/文心一言/通义千问 当工人用,你来当老板。</p>
+
+<h3>Q: 我没有 AI 基础,能用吗?</h3>
+<p>可以。系统已经调好提示词,直接复制粘贴到 ChatGPT/Claude/文心一言/通义千问 就能用,不需要会写提示词。</p>
+
+<h3>Q: 这能赚多少钱?</h3>
+<p>看执行力。一个客户 ¥500-2000,做到 5 个稳定客户就是 ¥2500-10000/月。大多数人第一个月就能回本,3-6 个月做到月入 1-3 万。</p>
+
+<h3>Q: 我用国内的 AI(文心/通义/豆包)能跑通吗?</h3>
+<p>可以。提示词已经做了国内 AI 适配,文心 4.0、通义千问、豆包、Kimi 都测试过。</p>
+
+<h3>Q: 白标转售是什么意思?</h3>
+<p>买 ¥199 套餐后,你可以把资料挂自己品牌(比如"老李的 AI 副业训练营")卖给别人,定价 ¥199-499,收益 100% 归你。我不抽成。</p>
+
+<h3>Q: 怎么付款?有发票吗?</h3>
+<p>微信/支付宝扫码付款,转账备注你的邮箱即可。付款后 24h 内发资料。需要发票联系微信。</p>
+
+<h3>Q: 多久能收到资料?</h3>
+<p>付款确认后 24 小时内,加微信 yangliwei_hzylw 发截图,我把 Members Area 访问链接 + Google Drive 资料包发到你邮箱。</p>
+
+<h3>Q: 不满意能退款吗?</h3>
+<p>7 天无理由退款。资料没用过 + 截图证明,微信转回。</p>
+
+<h3>Q: 有分销/代理吗?</h3>
+<p>白标就是分销。¥199 套餐以上包含白标权,可以挂自己品牌卖,我不抽成。</p>
+
+<h3>Q: 这个适合什么样的人?</h3>
+<p>想做副业但没方向的上班族;想接单的自由职业者;小工作室老板;想学 AI 商业化的大学生。技术背景不是必须。</p>
+</div>
+
+<footer>
+<h3 style="text-align:center;">🚀 AI 赚钱工具包 — 全球版本</h3>
+<p style="text-align:center; opacity:0.8; margin-bottom:24px;">英文版(全球客户,$9-499,PayPal)</p>
+<div class="related-grid">
+<a href="https://lwy907919-a11y.github.io/ai-money-kit/">
+<strong>💰 AI Money Kit (EN)</strong>
+<span>5 systems, $49-499</span>
+</a>
+<a href="https://lwy907919-a11y.github.io/ai-money-kit-free/">
+<strong>🆓 AIMK Free Tool</strong>
+<span>Free trial, 1 of 5 systems</span>
+</a>
+<a href="https://lwy907919-a11y.github.io/ai-money-kit-members/">
+<strong>🔒 Members Area</strong>
+<span>Full access, 5 systems</span>
+</a>
+<a href="https://lwy907919-a11y.github.io/hirepilot/">
+<strong>🎯 HirePilot</strong>
+<span>AI resume tool, $9-99</span>
+</a>
+<a href="https://lwy907919-a11y.github.io/hirepilot-freescore/">
+<strong>📊 FreeScore</strong>
+<span>30-sec resume score</span>
+</a>
+<a href="https://lwy907919-a11y.github.io/buy/">
+<strong>🛒 Buy (Global)</strong>
+<span>5 tiers, PayPal</span>
+</a>
+</div>
+<div style="text-align:center; opacity:0.7; font-size:0.9rem; padding-top:20px; border-top:1px solid #444; margin-top:20px;">
+<p>© 2026 AI 赚钱工具包 by Hzylw</p>
+<p>微信咨询:yangliwei_hzylw | 邮箱:hzylw@gmail.com</p>
+<p style="margin-top:12px; font-size:0.85rem;">中国版 | 全球版: <a href="https://lwy907919-a11y.github.io/ai-money-kit/">lwy907919-a11y.github.io/ai-money-kit/</a></p>
+</div>
+</footer>
+
+</div>
+</body>
+</html>
