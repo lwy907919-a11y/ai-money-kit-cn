@@ -488,10 +488,10 @@ footer h3 { margin-bottom: 16px; }
 // ==================== 虎皮椒支付集成 ====================
 window.AIMK_PAYMENT_CONFIG = {
   appid: '201906182857',                                  // 虎皮椒 AppID
-  secret: '23722b98d7f6dbae959d1d3692b1bbca',            // 虎皮椒 AppSecret
+  secret: '77c47350f66e72921dec0ce668771bb6',            // 虎皮椒 AppSecret
   gateway: 'https://xunhu-proxy.lwy907919.workers.dev',   // Cloudflare Worker (中转, 解决 CORS)
   notify_url: 'https://lwy907919-a11y.github.io/thanks/', // 支付完成回调(同步跳转)
-  return_url: 'https://lwy907919-a11y.github.io/thanks/', // 支付完成同步跳转
+  return_url: 'https://lwy907919-a11y.github.io/thanks/?out_trade_no={out_trade_no}&trade_order_id={out_trade_no}', // 支付完成同步跳转(带订单号)
   // 商品描述模板
   titles: {
     29: 'AI 智能体搭建系统 - 30天答疑',
