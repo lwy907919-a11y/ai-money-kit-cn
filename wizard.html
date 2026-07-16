@@ -397,10 +397,6 @@ async function callGemini(userMessage) {
   // 构造 Gemini API 请求
   const contents = [];
 
-  // System prompt 作为前置上下文
-  contents.push({ role: 'user', parts: [{ text: '[系统设定] ' + sys.systemPrompt }] });
-  contents.push({ role: 'model', parts: [{ text: '明白了。我会按照你给的流程引导用户。' }] });
-
   for (const m of fullMessages) {
     contents.push({
       role: m.role === 'assistant' ? 'model' : 'user',
@@ -410,6 +406,9 @@ async function callGemini(userMessage) {
 
   const requestBody = {
     contents,
+    systemInstruction: {
+      parts: [{ text: sys.systemPrompt }]
+    },
     generationConfig: {
       temperature: 0.85,
       maxOutputTokens: 2048,
