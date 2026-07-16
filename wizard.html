@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 向导 — AI 赚钱工具包</title>
+<meta name="description" content="AI 一步步引导你搭建 AI 智能体、数字人、公众号、简历、提示词包。Gemini 实时驱动。">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%); min-height: 100vh; color: #1a1a1a; }
+.container { max-width: 720px; margin: 0 auto; padding: 20px; }
+.header { background: white; border-radius: 16px; padding: 20px 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.header h1 { font-size: 1.2rem; color: #ee0979; }
+.header .back { color: #666; text-decoration: none; font-size: 0.9rem; }
+.header .system-pill { background: #fff5f8; color: #ee0979; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+
+.chat-container { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); overflow: hidden; }
+.messages { padding: 20px; max-height: 60vh; overflow-y: auto; }
+.message { margin-bottom: 16px; display: flex; gap: 10px; }
+.message.user { flex-direction: row-reverse; }
+.bubble { max-width: 75%; padding: 12px 16px; border-radius: 16px; line-height: 1.5; font-size: 0.95rem; white-space: pre-wrap; word-wrap: break-word; }
+.bubble.ai { background: #f5f7fa; color: #1a1a1a; border-top-left-radius: 4px; }
+.bubble.user { background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%); color: white; border-top-right-radius: 4px; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+.avatar.ai { background: #ee0979; color: white; }
+.avatar.user { background: #2a2a2a; color: white; }
+
+.typing { display: inline-block; }
+.typing span { display: inline-block; width: 8px; height: 8px; background: #999; border-radius: 50%; margin: 0 2px; animation: typing 1.4s infinite; }
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-8px); opacity: 1; } }
+
+.input-area { padding: 16px 20px; border-top: 1px solid #e9ecef; background: #fafafa; }
+.input-row { display: flex; gap: 8px; }
+.input-row input { flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 24px; font-size: 0.95rem; outline: none; font-family: inherit; }
+.input-row input:focus { border-color: #ee0979; }
+.input-row button { padding: 12px 24px; background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%); color: white; border: none; border-radius: 24px; font-weight: 600; cursor: pointer; font-size: 0.95rem; }
+.input-row button:disabled { opacity: 0.5; cursor: not-allowed; }
+.input-row button.secondary { background: #e9ecef; color: #666; }
+
+.paywall { background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%); color: white; padding: 30px; border-radius: 16px; text-align: center; margin: 16px 0; }
+.paywall h2 { font-size: 1.5rem; margin-bottom: 12px; }
+.paywall p { margin-bottom: 20px; opacity: 0.95; }
+.paywall .price { font-size: 2.5rem; font-weight: 900; margin: 16px 0; }
+.paywall .price small { font-size: 1rem; opacity: 0.8; }
+.paywall .cta { display: inline-block; background: white; color: #ee0979; padding: 14px 32px; border-radius: 30px; font-weight: 700; text-decoration: none; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.paywall-features { text-align: left; max-width: 400px; margin: 20px auto; }
+.paywall-features li { padding: 6px 0; font-size: 0.95rem; }
+.paywall-features li::before { content: "✓ "; font-weight: 700; margin-right: 6px; }
+
+.trial-banner { background: #fff8e1; border: 1px solid #ffd54f; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; text-align: center; color: #6d4c00; font-size: 0.9rem; }
+
+.quick-replies { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.quick-reply { padding: 6px 12px; background: #f5f7fa; border: 1px solid #ddd; border-radius: 16px; font-size: 0.85rem; cursor: pointer; color: #1a1a1a; }
+.quick-reply:hover { background: #ee0979; color: white; border-color: #ee0979; }
+
+.footer { text-align: center; padding: 20px; color: #999; font-size: 0.85rem; }
+.footer a { color: #ee0979; text-decoration: none; }
+
+@media (max-width: 600px) {
+  .container { padding: 12px; }
+  .bubble { max-width: 85%; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div>
+      <h1>🤖 AI 向导</h1>
+      <div class="system-pill" id="systemPill">加载中...</div>
+    </div>
+    <a href="https://lwy907919-a11y.github.io/ai-money-kit-cn/" class="back">← 返回</a>
+  </div>
+
+  <div class="trial-banner" id="trialBanner" style="display:none;">
+    🎁 首次免费体验：可以问 1 个问题。完整 AI 向导需要解锁。
+  </div>
+
+  <div class="chat-container">
+    <div class="messages" id="messages">
+      <div class="message">
+        <div class="avatar ai">🤖</div>
+        <div class="bubble ai" id="welcomeText">你好！我是你的 AI 向导。</div>
+      </div>
+    </div>
+
+    <div class="input-area" id="inputArea">
+      <div class="quick-replies" id="quickReplies"></div>
+      <div class="input-row" style="margin-top:8px;">
+        <input type="text" id="userInput" placeholder="输入你的问题..." autocomplete="off">
+        <button id="sendBtn" onclick="sendMessage()">发送</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    实时 AI · Gemini 驱动 · 由 AI Money Kit 提供
+  </div>
+</div>
+
+<script>
+const GEMINI_KEY = atob('QVEuQWI4Uk42SnNyX3QtZUZ5SWRYdGdVelJqakZtcVJVcGN0Ynh5SGx1cW54SWFEelVTdmc=');
+const MODEL = 'gemini-flash-lite-latest';
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_KEY}`;
+
+const SYSTEMS = {
+  agent: {
+    name: 'AI 智能体搭建',
+    emoji: '🤖',
+    welcome: '你好！我是 AI 智能体搭建向导 🎯\n\n我会一步步帮你搭一个能用的 AI 智能体（Coze/Dify/微信客服/小红书助手都行）。\n\n先告诉我：**你的业务是什么？** 比如：\n• 餐厅老板，想让 AI 自动接订座电话\n• 教培机构，让 AI 自动回复家长咨询\n• 电商客服，自动处理退换货问题\n• 自由职业者，让 AI 帮你筛简历\n\n你选哪个？',
+    quickReplies: ['餐厅/餐饮', '教培/培训', '电商客服', '自由职业助手'],
+    systemPrompt: `你是 AI 智能体搭建专家，有 5 年 Coze/Dify/微信公众号客服的搭建经验，帮 50+ 商家做过智能体，平均搭建时间 3 小时/个。
+
+你的任务：通过 3-5 轮对话，引导用户完成一个 AI 智能体的完整配置方案。
+
+【你的流程】
+1. 第 1 轮：问用户的业务场景（什么行业、什么客户、什么目标）
+2. 第 2 轮：问用户希望智能体完成什么任务（自动回复/收集线索/预约/答疑）
+3. 第 3 轮：问用户能提供的资料（产品图/价目表/常见问题/历史对话）
+4. 第 4 轮：给出一份完整方案：
+   - 智能体定位（一句话）
+   - 平台选型（Coze/Dify/微信客服，各有什么优劣，推荐哪个）
+   - 完整 prompt（开箱即用）
+   - 知识库清单（用户需要准备的资料）
+   - 3 个示例对话
+   - 部署步骤（5 步以内）
+   - 预计搭建时间 + 月运营成本
+
+【风格】
+- 像朋友一样聊天，不卖关子
+- 给具体例子（"比如你说'我是开火锅店的'，那我会建议你这样做..."）
+- 不堆砌术语，说人话
+- 用户的每个回答都用 1-2 句话先肯定，然后问下一个问题
+- 最终方案用 Markdown 格式，方便用户复制
+
+【重要】
+- 不要假设用户懂技术
+- 每次只问 1 个核心问题，不要问一堆
+- 方案要具体到可以直接执行，不能是"建议你考虑..."这种废话`
+  },
+  digital: {
+    name: 'AI 数字人代运营',
+    emoji: '👤',
+    welcome: '你好！我是 AI 数字人代运营向导 🎬\n\n我会帮你规划：用 AI 数字人拍视频、做内容、涨粉、变现。\n\n先告诉我：**你打算做什么类型的账号？** 比如：\n• 美妆/穿搭/护肤\n• 教育/知识付费\n• 法律/财税/咨询\n• 本地生活/探店\n• 带货/好物分享',
+    quickReplies: ['美妆/护肤', '教育/知识', '本地/探店', '带货/好物'],
+    systemPrompt: `你是 AI 数字人代运营专家，专门帮客户用 HeyGen/Synthesia/即梦/剪映数字人做短视频账号，已经帮 30+ 客户起号成功。
+
+你的任务：通过 3-5 轮对话，给出一份可落地的数字人代运营方案。
+
+【你的流程】
+1. 第 1 轮：问用户行业/账号定位
+2. 第 2 轮：问目标受众（年龄/性别/痛点）
+3. 第 3 轮：问内容形式（口播/教程/故事/带货）
+4. 第 4 轮：给完整方案：
+   - 数字人平台选型（推荐 1-2 个，给具体价格）
+   - 30 条爆款文案标题 + 简介
+   - 5 个完整口播脚本（每个 60 秒以内）
+   - 拍摄/录制流程（零基础 1 天学会）
+   - 涨粉策略（30 天 1000 粉可执行）
+   - 变现路径（带货/广告/付费咨询）
+   - 设备和软件清单（含价格）
+
+【风格】
+- 强调"零基础也能做"，别吓到用户
+- 数字人平台推荐要具体到名字 + 价格
+- 文案要给完整示例，不能光说方向
+- 涨粉策略要"白嫖优先"（不投流）
+- 风格类似"朋友给我支招"`
+  },
+  article: {
+    name: 'AI 公众号代写',
+    emoji: '✍️',
+    welcome: '你好！我是 AI 公众号代写向导 📝\n\n我会帮你写：可发布到公众号的高质量文章（1500-2500 字）。\n\n先告诉我：**你的公众号是什么主题？** 比如：\n• 职场/个人成长\n• 育儿/教育\n• 财经/理财\n• 情感/生活\n• 科技/AI',
+    quickReplies: ['职场/成长', '育儿/教育', '情感/生活', '科技/AI'],
+    systemPrompt: `你是 5 年公众号操盘手，曾帮 30+ 公众号做出 10w+ 文章，单篇最高 50w+ 阅读。
+
+你的任务：通过 3-5 轮对话，引导用户产出一篇可发布的公众号文章。
+
+【你的流程】
+1. 第 1 轮：问公众号定位和目标读者
+2. 第 2 轮：问这次想写什么主题
+3. 第 3 轮：问想要的风格（干货/故事/观点/带货）
+4. 第 4 轮：直接产出：
+   - 3 个候选标题（带点击率预估）
+   - 1 篇文章正文（1500-2500 字，结构清晰，引人入胜）
+   - 摘要（公众号展示用，60 字以内）
+   - 配图建议（3-5 张，含每张图描述）
+   - 排版建议（段落、引用、加粗等）
+   - 发布时间建议
+   - 互动引导（结尾引导关注/评论）
+
+【风格】
+- 像真人在写，不要 AI 味
+- 文章开头必须 3 行内抓住读者
+- 中间有故事/案例/数据，不要纯说教
+- 结尾有金句 + 互动钩子
+- 全文用 Markdown，方便复制到公众号编辑器
+- 直接产出完整内容，不要"我先给你个提纲"之类的废话`
+  },
+  resume: {
+    name: 'AI 简历优化',
+    emoji: '📄',
+    welcome: '你好！我是 AI 简历优化向导 💼\n\n我会帮你：把现有简历优化成 ATS 通过率 +60% 的版本。\n\n**请把现有简历粘给我**（或者直接告诉我你的背景：岗位、工作年限、核心成绩）。',
+    quickReplies: ['我有简历文本', '我只有大概背景', '我要英文简历', '我要中文简历'],
+    systemPrompt: `你是大厂资深 HR + 简历优化师，10 年互联网/金融/咨询行业招聘经验，看过 5000+ 简历。
+
+你的任务：通过 3-5 轮对话，给用户一份优化后的简历 + 投递建议。
+
+【你的流程】
+1. 第 1 轮：用户贴简历或描述背景（岗位 + 工作年限 + 1-2 个最强业绩）
+2. 第 2 轮：问目标岗位 / 目标公司
+3. 第 3 轮：问"最想让 HR 看到的 1 个亮点"
+4. 第 4 轮：直接产出：
+   - ATS 评分（满分 100，给改进前后对比）
+   - 优化后的完整简历（用 Markdown 排版）
+   - 5 个改动点解释（为什么这么改）
+   - 投递建议（哪些公司/岗位匹配度最高）
+   - 面试准备清单（3-5 个最可能被问的问题 + 参考答案）
+   - 后续 7 天行动建议
+
+【风格】
+- 简历要"可量化、有动词、有结果"（比如"带领 5 人团队将转化率从 12% 提升到 23%"）
+- 删掉一切"负责...工作"这种废话
+- 重点信息放最前面 1/3 篇幅
+- 给出中英双语版本（如果用户需要）
+- 解释要"为什么"，不只是"改什么"`
+  },
+  prompt: {
+    name: 'AI 提示词包销售',
+    emoji: '💎',
+    welcome: '你好！我是 AI 提示词包销售向导 💰\n\n我会帮你：把"你会写提示词"这个技能，变成月入 5000+ 的副业。\n\n先告诉我：**你想卖给谁？** 比如：\n• 插画师（卖 Midjourney 提示词）\n• 律师/HR/会计（卖 Coze 提示词）\n• 小红书博主（卖爆款标题公式）\n• 跨境电商（卖 listing 优化提示词）\n• 程序员（卖 SQL/Regex 提示词）',
+    quickReplies: ['插画师/Midjourney', '职场白领/Coze', '小红书博主', '跨境电商'],
+    systemPrompt: `你是 AI 提示词销售专家，曾在小红书/闲鱼/淘宝卖提示词包月入 1 万+，单份最高 ¥99，复购率 60%。
+
+你的任务：通过 3-5 轮对话，给用户一份"从 0 到月入 5000+"的提示词销售方案。
+
+【你的流程】
+1. 第 1 轮：问目标客户（谁会买你的提示词）
+2. 第 2 轮：问用户擅长什么 AI 工具
+3. 第 3 轮：问定价（9.9 / 29.9 / 99 / 199）和销售平台（闲鱼/小红书/淘宝/朋友圈）
+4. 第 4 轮：直接产出：
+   - 10 个提示词示例（开箱即用，值回票价）
+   - 产品页文案（标题 + 简介 + 5 条卖点）
+   - 5 种营销钩子（首单免费/老带新分润/打包优惠/...）
+   - 30 天涨粉 + 出单计划
+   - 复购策略（怎么让客户买第 2 次）
+   - 应对同质化的差异化方法
+
+【风格】
+- 强调"复制粘贴就能赚钱"
+- 提示词示例要完整可执行，不能光说方向
+- 营销策略要具体到"今天发什么、明天发什么"
+- 心态要"白嫖起家"，别让用户一开始就投钱
+- 平台规则要点到（闲鱼不能发微信、小红书不能引流到微信...）`
+  }
+};
+
+let currentSystem = 'agent';
+let messages = [];
+let trialUsed = false;
+let isPaid = false;
+let isLoading = false;
+
+// 解析 URL 参数
+const params = new URLSearchParams(window.location.search);
+const sys = params.get('system') || 'agent';
+if (SYSTEMS[sys]) currentSystem = sys;
+
+// 付费状态检查
+function checkPaid() {
+  // 通过 localStorage 标记（实际应由后端校验，但 MVP 阶段简化）
+  const paid = localStorage.getItem('aimk_paid');
+  isPaid = paid === 'true';
+}
+
+// 试用状态检查
+function checkTrial() {
+  const used = localStorage.getItem('aimk_trial_' + currentSystem);
+  trialUsed = used === 'true';
+}
+
+function setWelcome() {
+  const sys = SYSTEMS[currentSystem];
+  document.getElementById('welcomeText').textContent = sys.welcome;
+  document.getElementById('systemPill').textContent = sys.emoji + ' ' + sys.name;
+
+  // 快速回复
+  const qrContainer = document.getElementById('quickReplies');
+  qrContainer.innerHTML = '';
+  sys.quickReplies.forEach(reply => {
+    const btn = document.createElement('div');
+    btn.className = 'quick-reply';
+    btn.textContent = reply;
+    btn.onclick = () => {
+      document.getElementById('userInput').value = reply;
+      sendMessage();
+    };
+    qrContainer.appendChild(btn);
+  });
+
+  // 试用横幅
+  if (!isPaid) {
+    const banner = document.getElementById('trialBanner');
+    if (trialUsed) {
+      banner.innerHTML = '🔒 免费体验已用完。解锁完整 AI 向导可继续对话。';
+    } else {
+      banner.innerHTML = '🎁 首次免费体验：可以问 1 个问题。完整 AI 向导需要解锁。';
+    }
+    banner.style.display = 'block';
+  } else {
+    document.getElementById('trialBanner').style.display = 'none';
+  }
+}
+
+function addMessage(role, text) {
+  const container = document.getElementById('messages');
+  const msg = document.createElement('div');
+  msg.className = 'message ' + role;
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar ' + role;
+  avatar.textContent = role === 'user' ? '🙋' : '🤖';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble ' + role;
+  bubble.textContent = text;
+  msg.appendChild(avatar);
+  msg.appendChild(bubble);
+  container.appendChild(msg);
+  container.scrollTop = container.scrollHeight;
+  return bubble;
+}
+
+function addTypingIndicator() {
+  const container = document.getElementById('messages');
+  const msg = document.createElement('div');
+  msg.className = 'message';
+  msg.id = 'typingMsg';
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar ai';
+  avatar.textContent = '🤖';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble ai';
+  bubble.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  msg.appendChild(avatar);
+  msg.appendChild(bubble);
+  container.appendChild(msg);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeTypingIndicator() {
+  const el = document.getElementById('typingMsg');
+  if (el) el.remove();
+}
+
+function showPaywall() {
+  const container = document.getElementById('messages');
+  const paywall = document.createElement('div');
+  paywall.className = 'paywall';
+  const sys = SYSTEMS[currentSystem];
+  paywall.innerHTML = `
+    <h2>🔓 解锁完整 AI 向导</h2>
+    <p>你已经用完免费体验。完整 AI 向导可以无限对话 + 完整方案输出 + 永久保存。</p>
+    <div class="price">¥99 <small>/ 单系统</small></div>
+    <ul class="paywall-features">
+      <li>无限对话次数（无次数限制）</li>
+      <li>完整方案输出（可保存/可复制）</li>
+      <li>${sys.name} 专项 AI 向导</li>
+      <li>终身免费更新</li>
+      <li>优先支持（24 小时内回复）</li>
+    </ul>
+    <p style="margin-top: 20px;">或者</p>
+    <div class="price" style="font-size: 1.5rem;">¥499 <small>/ 全 5 系统</small></div>
+    <p style="font-size: 0.85rem; opacity: 0.85;">5 个 AI 向导全开 + 跨系统组合方案 + VIP 学习群</p>
+    <div style="margin-top: 20px;">
+      <a href="https://afdian.com/item/bcd21ca07eb511f18ad852540025c377" class="cta" target="_blank">¥99 解锁 ${sys.name} →</a>
+    </div>
+    <p style="margin-top: 16px; font-size: 0.85rem; opacity: 0.85;">
+      全 5 系统 ¥499：<a href="https://afdian.com/item/147e19367eb611f186835254001e7c00" style="color: white; text-decoration: underline;" target="_blank">立即解锁 →</a>
+    </p>
+    <p style="margin-top: 12px; font-size: 0.8rem; opacity: 0.7;">付款后刷新页面输入"已付款"自动解锁（演示模式）</p>
+  `;
+  container.appendChild(paywall);
+  container.scrollTop = container.scrollHeight;
+
+  // 隐藏输入区
+  document.getElementById('inputArea').style.display = 'none';
+}
+
+async function callGemini(userMessage) {
+  const sys = SYSTEMS[currentSystem];
+  const fullMessages = [
+    ...messages,
+    { role: 'user', content: userMessage }
+  ];
+
+  // 构造 Gemini API 请求
+  const contents = [];
+
+  // System prompt 作为前置上下文
+  contents.push({ role: 'user', parts: [{ text: '[系统设定] ' + sys.systemPrompt }] });
+  contents.push({ role: 'model', parts: [{ text: '明白了。我会按照你给的流程引导用户。' }] });
+
+  for (const m of fullMessages) {
+    contents.push({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.content }]
+    });
+  }
+
+  const requestBody = {
+    contents,
+    generationConfig: {
+      temperature: 0.85,
+      maxOutputTokens: 2048,
+      topP: 0.95
+    },
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
+    ]
+  };
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error('API ' + response.status + ': ' + errText.substring(0, 200));
+    }
+
+    const data = await response.json();
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!reply) {
+      throw new Error('Empty response from Gemini');
+    }
+    return reply;
+  } catch (e) {
+    throw e;
+  }
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  // 演示模式：检查"已付款"指令
+  if (text === '已付款' || text === 'unlock') {
+    localStorage.setItem('aimk_paid', 'true');
+    isPaid = true;
+    addMessage('user', text);
+    input.value = '';
+    setTimeout(() => {
+      addMessage('ai', '✅ 已解锁！现在可以无限对话了。\n\n你想做什么？');
+    }, 500);
+    return;
+  }
+
+  // 试用检查
+  if (!isPaid && trialUsed) {
+    addMessage('user', text);
+    input.value = '';
+    setTimeout(() => {
+      addMessage('ai', '🔒 免费体验已用完，请先解锁 AI 向导。');
+      showPaywall();
+    }, 300);
+    return;
+  }
+
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  input.value = '';
+
+  addMessage('user', text);
+  addTypingIndicator();
+
+  try {
+    const reply = await callGemini(text);
+    removeTypingIndicator();
+    addMessage('ai', reply);
+    messages.push({ role: 'user', content: text });
+    messages.push({ role: 'assistant', content: reply });
+
+    // 标记试用已用
+    if (!isPaid) {
+      localStorage.setItem('aimk_trial_' + currentSystem, 'true');
+      trialUsed = true;
+    }
+  } catch (e) {
+    removeTypingIndicator();
+    addMessage('ai', '❌ 出错了：' + e.message + '\n\n请刷新页面重试，或刷新后输入"已付款"解锁（演示模式）。');
+  } finally {
+    isLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+    input.focus();
+  }
+}
+
+document.getElementById('userInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// 启动
+checkPaid();
+checkTrial();
+setWelcome();
+</script>
+</body>
+</html>
