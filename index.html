@@ -91,6 +91,20 @@ footer h3 { margin-bottom: 16px; }
 .payment-manual { background: white; padding: 24px; border-radius: 12px; margin-top: 24px; text-align: center; }
 .payment-manual h4 { color: #ee0979; margin-bottom: 12px; }
 .payment-manual strong { color: #ee0979; }
+
+/* Email Capture Popup */
+.email-capture-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; }
+.email-capture-popup { background:white; border-radius:16px; max-width:420px; width:90%; padding:32px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+.email-capture-popup h3 { color:#ee0979; font-size:1.4rem; margin-bottom:8px; }
+.email-capture-popup p { color:#555; font-size:0.95rem; margin-bottom:20px; line-height:1.6; }
+.email-capture-popup input[type=email] { width:100%; padding:14px 16px; border:2px solid #ee0979; border-radius:8px; font-size:1rem; outline:none; margin-bottom:12px; }
+.email-capture-popup input[type=email]:focus { border-color:#ff6a00; }
+.email-capture-popup .perks { text-align:left; background:#fff5f8; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:0.9rem; color:#666; }
+.email-capture-popup .perks li { list-style:none; padding:3px 0; }
+.email-capture-popup .perks li::before { content:'✓ '; color:#22c55e; font-weight:700; }
+.email-capture-popup .skip-link { color:#999; font-size:0.85rem; cursor:pointer; text-decoration:underline; margin-top:10px; display:inline-block; }
+.email-capture-popup .skip-link:hover { color:#666; }
+.email-capture-success { color:#22c55e; font-size:0.9rem; margin-top:8px; }
 </style>
 </head>
 <body>
@@ -477,7 +491,7 @@ footer h3 { margin-bottom: 16px; }
 <span class="payment-cta">立即支付 →</span>
 </a>
 
-<div class="payment-card payment-active" onclick="openPaymentModal('alipay')" style="cursor:pointer;">
+<div class="payment-card payment-active" onclick="captureAndOpen('alipay')" style="cursor:pointer;">
 <div class="payment-icon" style="background:#1677ff;">💙</div>
 <h4>支付宝</h4>
 <p class="payment-desc">国内首选 · 担保交易<br>¥29 / ¥199 / ¥499</p>
@@ -485,7 +499,7 @@ footer h3 { margin-bottom: 16px; }
 <span class="payment-cta">立即支付 →</span>
 </div>
 
-<div class="payment-card payment-active" onclick="openPaymentModal('wechat')" style="cursor:pointer;">
+<div class="payment-card payment-active" onclick="captureAndOpen('wechat')" style="cursor:pointer;">
 <div class="payment-icon" style="background:#07c160;">📱</div>
 <h4>微信支付</h4>
 <p class="payment-desc">国内首选 · 担保交易<br>¥29 / ¥199 / ¥499</p>
@@ -649,6 +663,23 @@ footer h3 { margin-bottom: 16px; }
 </div>
 
 
+<!-- Email Capture Popup (abandoned-cart recovery) -->
+<div id="emailCaptureOverlay" class="email-capture-overlay">
+<div class="email-capture-popup">
+  <h3>📧 先留个邮箱，方便联系你</h3>
+  <p>付款后 24h 内我把资料发到你邮箱，<br>万一支付出问题也能联系到你。</p>
+  <ul class="perks">
+    <li>立即获得 <strong>免费 Bonus 礼包</strong></li>
+    <li>优先回复你的问题（24h 内）</li>
+    <li>第一时间收到产品更新通知</li>
+  </ul>
+  <input type="email" id="captureEmail" placeholder="your@email.com" autocomplete="email" />
+  <button onclick="submitEmailAndPay()" style="width:100%; background:linear-gradient(135deg,#ee0979,#ff6a00); color:white; border:none; padding:14px; border-radius:8px; font-size:1rem; font-weight:700; cursor:pointer;">🚀 继续支付 →</button>
+  <div id="emailSuccessMsg" class="email-capture-success" style="display:none;">✅ 邮箱已记录！点击上方按钮继续。</div>
+  <span class="skip-link" onclick="skipEmailAndPay()">不需要，直接支付 →</span>
+</div>
+</div>
+
 <!-- Payment Modal (虎皮椒) -->
 <div id="paymentModal" class="payment-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center;">
 <div class="payment-modal-content" style="background:white; border-radius:16px; max-width:440px; width:90%; padding:32px; text-align:center; position:relative;">
@@ -735,6 +766,40 @@ window.AIMK_PAYMENT_CONFIG = {
 
 // 当前选中的支付方式(alipay/wechat)
 let currentPayMethod = 'wechat';
+let pendingPaymentMethod = null; // email capture 拦截时记住要开哪个支付
+
+// Email capture + abandoned-cart recovery
+function captureAndOpen(method) {
+  // GA4 event: checkout started
+  try { if(typeof gtag !== 'undefined') gtag('event', 'begin_checkout', { payment_method: method, currency: 'CNY' }); } catch(e) {}
+  // 检查是否已留过邮箱
+  const existing = localStorage.getItem('aimk_email');
+  if (existing) {
+    openPaymentModal(method);
+    return;
+  }
+  pendingPaymentMethod = method;
+  document.getElementById('emailCaptureOverlay').style.display = 'flex';
+  document.getElementById('captureEmail').value = '';
+  document.getElementById('emailSuccessMsg').style.display = 'none';
+  document.getElementById('captureEmail').focus();
+}
+
+// submitEmailAndPay / skipEmailAndPay defined below (handle both afdian + payment-modal)
+
+// 每天检查：24h 内留过邮箱但没有成功订单 → 提示用户可发 follow-up
+function checkAbandonedCarts() {
+  const email = localStorage.getItem('aimk_email');
+  const ts = localStorage.getItem('aimk_email_ts');
+  const purchased = localStorage.getItem('aimk_purchased');
+  if (email && ts && !purchased) {
+    const hoursSince = (Date.now() - parseInt(ts)) / 3600000;
+    if (hoursSince >= 24 && hoursSince < 72) {
+      console.log('[AI Money Kit] Abandoned cart alert: ' + email + ' (started ' + Math.round(hoursSince) + 'h ago)');
+    }
+  }
+}
+checkAbandonedCarts();
 
 function openPaymentModal(method) {
   currentPayMethod = method;
@@ -1268,7 +1333,52 @@ async function payWithXunhu() {
 
 // 爱发电支付 - 选择档位弹窗
 function openAfdianModal() {
-  document.getElementById('afdianModal').style.display = 'flex';
+  // GA4 event: afdian checkout started
+  try { if(typeof gtag !== 'undefined') gtag('event', 'begin_checkout', { payment_method: 'afdian', currency: 'CNY' }); } catch(e) {}
+  const existing = localStorage.getItem('aimk_email');
+  if (!existing) {
+    pendingPaymentMethod = 'afdian';
+    document.getElementById('emailCaptureOverlay').style.display = 'flex';
+    document.getElementById('captureEmail').value = '';
+    document.getElementById('emailSuccessMsg').style.display = 'none';
+    document.getElementById('captureEmail').focus();
+  } else {
+    document.getElementById('afdianModal').style.display = 'flex';
+  }
+}
+
+// Override afdian flow to handle email capture
+function submitEmailAndPay() {
+  const email = document.getElementById('captureEmail').value.trim();
+  if (email && email.includes('@') && email.includes('.')) {
+    localStorage.setItem('aimk_email', email);
+    localStorage.setItem('aimk_email_ts', Date.now().toString());
+    try { if(typeof gtag !== 'undefined') gtag('event', 'email_captured', { email_domain: email.split('@')[1] }); } catch(e) {}
+    document.getElementById('emailSuccessMsg').style.display = 'block';
+    document.getElementById('captureEmail').disabled = true;
+    setTimeout(() => {
+      document.getElementById('emailCaptureOverlay').style.display = 'none';
+      document.getElementById('captureEmail').disabled = false;
+      if (pendingPaymentMethod === 'afdian') {
+        document.getElementById('afdianModal').style.display = 'flex';
+      } else if (pendingPaymentMethod) {
+        openPaymentModal(pendingPaymentMethod);
+      }
+      pendingPaymentMethod = null;
+    }, 800);
+  } else {
+    alert('请输入有效的邮箱地址');
+  }
+}
+
+function skipEmailAndPay() {
+  document.getElementById('emailCaptureOverlay').style.display = 'none';
+  if (pendingPaymentMethod === 'afdian') {
+    document.getElementById('afdianModal').style.display = 'flex';
+  } else if (pendingPaymentMethod) {
+    openPaymentModal(pendingPaymentMethod);
+  }
+  pendingPaymentMethod = null;
 }
 function closeAfdianModal() {
   document.getElementById('afdianModal').style.display = 'none';
