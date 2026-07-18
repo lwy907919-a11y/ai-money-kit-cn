@@ -535,11 +535,11 @@ footer h3 { margin-bottom: 16px; }
 <span class="payment-cta">立即支付 →</span>
 </a>
 
-<a href="https://lwy9079.gumroad.com/l/hzylw" target="_blank" rel="noopener" class="payment-card payment-active">
-<div class="payment-icon" style="background:#ff90e8;">🛍️</div>
-<h4>Gumroad</h4>
-<p class="payment-desc">全球 · 信用卡/PayPal<br>$9 / $29 / $99 / $199</p>
-<p class="payment-status">✅ 已配置</p>
+<a onclick="captureAndOpen('ls')" style="cursor:pointer;" class="payment-card payment-active">
+<div class="payment-icon" style="background:#7c3aed;">💳</div>
+<h4>信用卡/借记卡</h4>
+<p class="payment-desc">全球通用 · Visa/Mastercard<br>¥66 / ¥188 / ¥666</p>
+<p class="payment-status">✅ 已配置 · Stripe 驱动</p>
 <span class="payment-cta">立即支付 →</span>
 </a>
 
@@ -720,6 +720,48 @@ footer h3 { margin-bottom: 16px; }
 </div>
 </div>
 
+<!-- 信用卡档位选择 Modal -->
+<div id="lsModal" class="payment-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center;">
+<div class="payment-modal-content" style="background:white; border-radius:16px; max-width:440px; width:90%; padding:32px; text-align:center; position:relative;">
+<button onclick="closeLsModal()" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:24px; cursor:pointer; color:#999;">×</button>
+<h3 style="color:#1a1a1a; margin-bottom:8px;">💳 选择套餐 (信用卡支付)</h3>
+<p style="color:#666; font-size:0.9rem; margin-bottom:20px;">点击下方档位，跳转到 Lemon Squeezy 安全结账</p>
+
+<div onclick="goToLs(66)" style="cursor:pointer; background:linear-gradient(135deg, #f5f5f5 0%, #fff 100%); border:2px solid #ddd; border-radius:12px; padding:20px; margin-bottom:12px; text-align:left; transition:all 0.2s;" onmouseover="this.style.borderColor='#7c3aed'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#ddd'; this.style.transform='translateY(0)'">
+<div style="display:flex; justify-content:space-between; align-items:center;">
+<div>
+<div style="font-size:1.1rem; font-weight:700; color:#1a1a1a;">¥66 - 单系统试用</div>
+<div style="color:#666; font-size:0.85rem; margin-top:4px;">AI 智能体搭建系统 + 7天答疑</div>
+</div>
+<div style="font-size:1.8rem; font-weight:900; color:#7c3aed;">¥66</div>
+</div>
+</div>
+
+<div onclick="goToLs(188)" style="cursor:pointer; background:linear-gradient(135deg, #f5f0ff 0%, #ede9fe 100%); border:2px solid #7c3aed; border-radius:12px; padding:20px; margin-bottom:12px; text-align:left; transition:all 0.2s; position:relative;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+<div style="position:absolute; top:-10px; right:16px; background:#7c3aed; color:white; padding:2px 10px; border-radius:4px; font-size:0.7rem; font-weight:700;">⭐ 最热销</div>
+<div style="display:flex; justify-content:space-between; align-items:center;">
+<div>
+<div style="font-size:1.1rem; font-weight:700; color:#1a1a1a;">¥188 - 6 大系统全包</div>
+<div style="color:#666; font-size:0.85rem; margin-top:4px;">智能体/数字人/公众号/简历/提示词/客服 · 30天答疑</div>
+</div>
+<div style="font-size:1.8rem; font-weight:900; color:#7c3aed;">¥188</div>
+</div>
+</div>
+
+<div onclick="goToLs(666)" style="cursor:pointer; background:linear-gradient(135deg, #f5f5f5 0%, #fff 100%); border:2px solid #ddd; border-radius:12px; padding:20px; margin-bottom:12px; text-align:left; transition:all 0.2s;" onmouseover="this.style.borderColor='#7c3aed'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#ddd'; this.style.transform='translateY(0)'">
+<div style="display:flex; justify-content:space-between; align-items:center;">
+<div>
+<div style="font-size:1.1rem; font-weight:700; color:#1a1a1a;">¥666 - 全套+白标转售权</div>
+<div style="color:#666; font-size:0.85rem; margin-top:4px;">6 系统 + 白标权 + 60天答疑 + 客户案例库</div>
+</div>
+<div style="font-size:1.8rem; font-weight:900; color:#7c3aed;">¥666</div>
+</div>
+</div>
+
+<p style="color:#999; font-size:0.8rem; line-height:1.5; margin-top:16px;">🔒 支付由 <strong style="color:#7c3aed;">Lemon Squeezy + Stripe</strong> 担保<br>支持 Visa/Mastercard/Amex/Apple Pay · 支付后 24h 内发货</p>
+</div>
+</div>
+
 <!-- 爱发电档位选择 Modal -->
 <div id="afdianModal" class="payment-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center;">
 <div class="payment-modal-content" style="background:white; border-radius:16px; max-width:440px; width:90%; padding:32px; text-align:center; position:relative;">
@@ -741,8 +783,8 @@ footer h3 { margin-bottom: 16px; }
 <div style="position:absolute; top:-10px; right:16px; background:#ff6b6b; color:white; padding:2px 10px; border-radius:4px; font-size:0.7rem; font-weight:700;">⭐ 最热销</div>
 <div style="display:flex; justify-content:space-between; align-items:center;">
 <div>
-<div style="font-size:1.1rem; font-weight:700; color:#1a1a1a;">¥199 - 5 大系统全包</div>
-<div style="color:#666; font-size:0.85rem; margin-top:4px;">智能体/数字人/公众号/简历/提示词 · 60天答疑</div>
+<div style="font-size:1.1rem; font-weight:700; color:#1a1a1a;">¥199 - 6 大系统全包</div>
+<div style="color:#666; font-size:0.85rem; margin-top:4px;">智能体/数字人/公众号/简历/提示词/客服 · 60天答疑</div>
 </div>
 <div style="font-size:1.8rem; font-weight:900; color:#ff6b6b;">¥199</div>
 </div>
@@ -752,7 +794,7 @@ footer h3 { margin-bottom: 16px; }
 <div style="display:flex; justify-content:space-between; align-items:center;">
 <div>
 <div style="font-size:1.1rem; font-weight:700; color:#1a1a1a;">¥499 - 全套+1对1咨询</div>
-<div style="color:#666; font-size:0.85rem; margin-top:4px;">5 系统 + 1对1诊断辅导 + 90天答疑</div>
+<div style="color:#666; font-size:0.85rem; margin-top:4px;">6 系统 + 1对1诊断辅导 + 90天答疑</div>
 </div>
 <div style="font-size:1.8rem; font-weight:900; color:#ff6b6b;">¥499</div>
 </div>
@@ -781,6 +823,13 @@ window.AIMK_PAYMENT_CONFIG = {
     29: 'https://afdian.com/item/36f825a27eb511f1a1a252540025c377',
     199: 'https://afdian.com/item/bcd21ca07eb511f18ad852540025c377',
     499: 'https://afdian.com/item/147e19367eb611f186835254001e7c00'
+  },
+  // Lemon Squeezy 信用卡 (人民币定价)
+  ls_urls: {
+    66: 'https://lwy907919-a11.lemonsqueezy.com/checkout/buy/3602292d-eb2c-4cad-9d2d-07608b8c3dff',
+    188: 'https://lwy907919-a11.lemonsqueezy.com/checkout/buy/24bbb965-1909-41ef-be27-197619f748a3',
+    666: 'https://lwy907919-a11.lemonsqueezy.com/checkout/buy/34d0dd2b-5de4-4b9a-af5a-f79667528e5c',
+    1368: 'https://lwy907919-a11.lemonsqueezy.com/checkout/buy/c60ec11e-a731-40c3-b98c-ed0bef0e6c97'
   }
 };
 
@@ -795,6 +844,7 @@ function captureAndOpen(method) {
   // 检查是否已留过邮箱
   const existing = localStorage.getItem('aimk_email');
   if (existing) {
+    if (method === 'ls') { openLsModal(); return; }
     openPaymentModal(method);
     return;
   }
@@ -1381,6 +1431,8 @@ function submitEmailAndPay() {
       document.getElementById('captureEmail').disabled = false;
       if (pendingPaymentMethod === 'afdian') {
         document.getElementById('afdianModal').style.display = 'flex';
+      } else if (pendingPaymentMethod === 'ls') {
+        document.getElementById('lsModal').style.display = 'flex';
       } else if (pendingPaymentMethod) {
         openPaymentModal(pendingPaymentMethod);
       }
@@ -1395,6 +1447,8 @@ function skipEmailAndPay() {
   document.getElementById('emailCaptureOverlay').style.display = 'none';
   if (pendingPaymentMethod === 'afdian') {
     document.getElementById('afdianModal').style.display = 'flex';
+  } else if (pendingPaymentMethod === 'ls') {
+    document.getElementById('lsModal').style.display = 'flex';
   } else if (pendingPaymentMethod) {
     openPaymentModal(pendingPaymentMethod);
   }
@@ -1402,6 +1456,21 @@ function skipEmailAndPay() {
 }
 function closeAfdianModal() {
   document.getElementById('afdianModal').style.display = 'none';
+}
+
+function openLsModal() {
+  document.getElementById('lsModal').style.display = 'flex';
+}
+function closeLsModal() {
+  document.getElementById('lsModal').style.display = 'none';
+}
+function goToLs(tier) {
+  const url = window.AIMK_PAYMENT_CONFIG.ls_urls[tier];
+  if (url) {
+    window.open(url, '_blank');
+    try { if(typeof gtag !== 'undefined') gtag('event', 'select_tier', { payment_method: 'ls', tier: tier }); } catch(e) {}
+  }
+  closeLsModal();
 }
 function goToAfdian(tier) {
   const config = window.AIMK_PAYMENT_CONFIG;
